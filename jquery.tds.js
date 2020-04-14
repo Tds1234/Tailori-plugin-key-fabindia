@@ -1076,9 +1076,9 @@
 						if(imgSrc !== ""){
 							this._placeImages(imgSrc,this._Images[this._SelectedAlignment.replace(/ +/g, "").toLowerCase()],1);
 						}else{
-							var callback = that.Option("OnRenderImageChange");
+							var callback = this.Option("OnRenderImageChange");
 							if (typeof callback == 'function')
-							callback.call(that, imagesArray);
+							callback.call(this, imagesArray);
 						}
 					},
 					fail: function () {}
