@@ -1,5 +1,5 @@
 /*
- * jQuery tds.tailori plugin v-2.1 [03d20y/l1.2 (Fabindia 13042020)]
+ * jQuery tds.tailori plugin v-2.1 [03d20y/l1.2 (Fabindia 16042020)]
  * Original Author:  @ Sagar Narayane & Rohit Ghadigaonkar
  * Further Changes, comments:
  * Licensed under the Textronics Design System pvt.ltd.
@@ -45,7 +45,7 @@
 		_MonogramColor: "",
 		_MonogramFont: "",
 		_MonogramText: "",
-		_MonogramAlignment : "FACE",
+		_MonogramAlignment : "Face",
 		_MPlacement : new Array(),
 		_MFont : new Array(),
 		_MColor : new Array(),
@@ -61,7 +61,7 @@
 		_AddOnData : [],
 		_LibConfig: new Object,
 		_IsAlignmentClick: false,
-		_SelectedAlignment: "FACE",
+		_SelectedAlignment: "Face",
 		_IsCustomizeOptions : false,
 		_CustomizeOptions : [],
 		_SaveLookAlignmentFlag : false,
@@ -99,7 +99,7 @@
 		},
 
 		init: function () {
-			console.info("Textronic jquery.tds.js v-2.1 [03d20y/l1.2] (Fabindia 13042020)");
+			console.info("Textronic jquery.tds.js v-2.1 [03d20y/l1.2] (Fabindia 16042020)");
 			this.config = $.extend({}, this.defaults, this.options, this.metadata);
 			this._Swatch = this.Option("Swatch");
 			this._setCofiguration(this.Option("Product"));
@@ -752,6 +752,7 @@
 										for(var l=0;l < this._Alignments.length; l++){
 											if(this._SelectedAlignment.toLowerCase() == this._Alignments[l].toLowerCase()){
 												this._CurrentAlignmentIndex = l;
+												this._SelectedAlignment = this._Alignments[l];
 											}
 										}
 									}
@@ -1008,7 +1009,7 @@
 				if (!this._IsSpecific)
 					this._IsAlignmentClick = false;
 				
-				this._placeImages(imgSrc,this._Images[this._SelectedAlignment.replace(/ +/g, "").toLowerCase()],1);
+				this._placeImages(imgSrc,this._Images[this._Alignments.indexOf(this._SelectedAlignment)],1);
 				
 				return;
 			}
@@ -1033,6 +1034,7 @@
 			var raw = this._Url;
 			/*if (this._IsSpecific)
 				this._Url += "/type=3"*/
+			this._Url += "/type=8";
 
 				//if (this.Option("AutoSpecific"))
 					//this._IsSpecific = true;
@@ -1068,13 +1070,24 @@
 
 						var isAny = false;
 						var className = Date.now();
-						var imagesArray = data;
+						var imagesArray = {};
+						
+						for(var i = 0; i < this._Alignments.length;i++){
+							if(this._Alignments[i] == undefined)
+								continue;
+							
+							imagesArray[i] = {normal:[],contrast:[],combineimage:""};
+							imagesArray[i].normal = data[this._Alignments[i].replace(/ +/g, "").toLowerCase()].UrlsList;
+							imagesArray[i].contrast = data[this._Alignments[i].replace(/ +/g, "").toLowerCase()].ConstrastList;
+							imagesArray[i].combineimage = this._ImageUrl.replace("type=8","").replace("ALL",this._Alignments[i]);
+						}
+						
 						var c = 1;
 						
-						this._Images = data;
+						this._Images = imagesArray;
 						
 						if(imgSrc !== ""){
-							this._placeImages(imgSrc,this._Images[this._SelectedAlignment.replace(/ +/g, "").toLowerCase()],1);
+							this._placeImages(imgSrc,this._Images[this._Alignments.indexOf(this._SelectedAlignment)],1);
 						}else{
 							var callback = this.Option("OnRenderImageChange");
 							if (typeof callback == 'function')
@@ -1095,24 +1108,29 @@
 			var specificimgsrc = this.Option("SpecificImageSource");
 			var spe = false;
 			var dataUrl = "";
+			var imageurls = data.normal;
+			
+			if(data.combineimage.indexOf("gon") > -1)
+				imageurls = data.contrast;
+			
 
-			if (data.length === 2 && data[0] === "" && data[1].indexOf("Monogram") > 1) {
+			if (imageurls.length === 2 && imageurls[0] === "" && imageurls[1].indexOf("Monogram") > 1) {
 				var isAny = false;
 			} else
-				for (var url=0;url < data.length;url++) {
-					if (data[url] != "") {
+				for (var url=0;url < imageurls.length;url++) {
+					if (imageurls[url] != "") {
 						if (imgSrc !== undefined) {
 
-							dataUrl = data[url];
+							dataUrl = imageurls[url];
 							var h = $(imgSrc).height();
 
 							if(this.Option('ImageSize') != "" ){
 								if(this.Option('ImageSize').toLowerCase() == 'o' ||
 								this.Option('ImageSize').toLowerCase() == 'original' ||
 								this.Option('ImageSize').toLowerCase() == 'auto')
-									dataUrl = data[url];
+									dataUrl = imageurls[url];
 								else
-									dataUrl = data[url] + "?h=" + this.Option('ImageSize') + "&scale=both";
+									dataUrl = imageurls[url] + "?h=" + this.Option('ImageSize') + "&scale=both";
 							}else if(h > 1){
 								dataUrl += "?h=" + h + "&scale=both";
 							}else{
@@ -1309,7 +1327,7 @@
 			this._setCofiguration(product, this.Option("ProductTemplate"));
 			this._IsCustomizeOptions = false;
 			this._CustomizeOptions = [];
-			this._SelectedAlignment = "FACE";
+			this._SelectedAlignment = "Face";
 		},
 
 		Texture: function (id,onlyset) {
@@ -1722,7 +1740,7 @@
 			this._CurrentBlockedDetails = Array();
 			this._Swatch = "";
 			this._Color = "";
-			this._SelectedAlignment = "FACE";
+			this._SelectedAlignment = "Face";
 			this._MonogramPlacement = "";
 			this._MonogramColor = "";
 			this._MonogramFont = "";
