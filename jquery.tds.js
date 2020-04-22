@@ -1,5 +1,5 @@
 /*
- * jQuery tds.tailori plugin v-2.1 [03d20y/l1.2 (Fabindia 16042020)]
+ * jQuery tds.tailori plugin v-2.1 [03d20y/l1.2 (Fabindia 22042020)]
  * Original Author:  @ Sagar Narayane & Rohit Ghadigaonkar
  * Further Changes, comments:
  * Licensed under the Textronics Design System pvt.ltd.
@@ -99,7 +99,7 @@
 		},
 
 		init: function () {
-			console.info("Textronic jquery.tds.js v-2.1 [03d20y/l1.2] (Fabindia 16042020)");
+			console.info("Textronic jquery.tds.js v-2.1 [03d20y/l1.2] (Fabindia 22042020)");
 			this.config = $.extend({}, this.defaults, this.options, this.metadata);
 			this._Swatch = this.Option("Swatch");
 			this._setCofiguration(this.Option("Product"));
@@ -1076,10 +1076,11 @@
 							if(this._Alignments[i] == undefined)
 								continue;
 							
-							imagesArray[i] = {normal:[],contrast:[],combineimage:""};
+							imagesArray[i] = {normal:[],contrast:[],normal_combineimage:"",contrast_combineimage:""};
 							imagesArray[i].normal = data[this._Alignments[i].replace(/ +/g, "").toLowerCase()].UrlsList;
 							imagesArray[i].contrast = data[this._Alignments[i].replace(/ +/g, "").toLowerCase()].ConstrastList;
-							imagesArray[i].combineimage = this._ImageUrl.replace("type=8","").replace("ALL",this._Alignments[i]);
+							imagesArray[i].normal_combineimage = this._ImageUrl.replace("type=8","").replace("ALL",this._Alignments[i]);
+							imagesArray[i].contrast_combineimage = this._ImageUrl.replace("ALL",this._Alignments[i]);
 						}
 						
 						var c = 1;
@@ -1110,7 +1111,7 @@
 			var dataUrl = "";
 			var imageurls = data.normal;
 			
-			if(data.combineimage.indexOf("gon") > -1)
+			if(data.normal_combineimage.indexOf("gon") > -1)
 				imageurls = data.contrast;
 			
 
